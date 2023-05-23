@@ -10,7 +10,7 @@ CREATE TABLE Customer(
     customer_name VARCHAR(255) NOT NULL,
     tckn BIGINT NOT NULL,
     bdate DATE NOT NULL,
-    inviter_id INT REFERENCES Customer(id) NULL,
+    parent_id INT REFERENCES Customer(id) NULL,
     registration_date DATE NOT NULL
 );
 
