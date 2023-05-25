@@ -1,9 +1,9 @@
-DROP TABLE Credit_Card;
-DROP TABLE Customer;
-DROP TABLE Account_Type;
+DROP TABLE Transaction_Table;
 DROP TABLE Branch;
 DROP TABLE Account;
-DROP TABLE Transaction_Table;
+DROP TABLE Account_Type;
+DROP TABLE Credit_Card;
+DROP TABLE Customer;
 
 CREATE TABLE Customer(
     id SERIAL PRIMARY KEY,
@@ -21,8 +21,6 @@ CREATE TABLE Credit_Card(
     card_limit REAL NOT NULL,
     balance REAL NOT NULL,
     due_date DATE NOT NULL,
-    expiration_month INT NOT NULL,
-    expiration_year INT NOT NULL,
     ccv INT NOT NULL,
     card_number BIGINT NOT NULL
 );
@@ -46,7 +44,6 @@ CREATE TABLE Account(
     account_type_id INT REFERENCES Account_Type(id) NOT NULL,
     balance REAL NOT NULL,
     branch_id INT NOT NULL,
-    account_type VARCHAR(255) NOT NULL,
     opening_date DATE NOT NULL,
     expiration_date DATE NULL,
         PRIMARY KEY (customer_id, account_type_id)
