@@ -1,0 +1,2 @@
+-- hesap bakiyesinin sıfırın altına düşmesini önleyen trigger
+-- para göndermek için fonksiyon
