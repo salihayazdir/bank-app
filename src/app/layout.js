@@ -29,16 +29,23 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} flex`} >
-        <div className='flex flex-col min-h-screen gap-4 p-6 border-r border-gray-200 shadow-xl'>
+        <div className='flex flex-col min-h-screen gap-4 px-4 py-8 text-sm font-semibold border-r border-gray-200 shadow-xl'>
           {
             customers.map(customer => {
               return (
                 <Link href={`/customer/${customer.id}`}>
-                  <span>{customer.customer_name}</span>
+                  <span className='px-2 py-1 text-indigo-700 rounded-md hover:bg-indigo-50 whitespace-nowrap' >
+                    {customer.customer_name}
+                  </span>
                 </Link>
               )
             })
           }
+          <Link href={`/transferler`} className='mt-6'>
+            <span className='px-2 py-1 text-orange-700 rounded-md hover:bg-orange-50 whitespace-nowrap'>
+              Para Transferleri
+            </span>
+          </Link>
         </div>
         <div className='flex flex-col w-full p-8' >
           <div>{children}</div>

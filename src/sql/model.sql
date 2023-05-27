@@ -1,6 +1,6 @@
 DROP TABLE Transaction_Table;
-DROP TABLE Branch;
 DROP TABLE Account;
+DROP TABLE Branch;
 DROP TABLE Account_Type;
 DROP TABLE Credit_Card;
 DROP TABLE Customer;
@@ -52,8 +52,9 @@ CREATE TABLE Account(
 
 CREATE TABLE Transaction_Table(
     id SERIAL PRIMARY KEY,
-    receiver_account_id INT REFERENCES Account_Type(id) NOT NULL,
-    sender_account_id INT REFERENCES Account_Type(id) NOT NULL,
+    receiver_account_id INT REFERENCES Account(account_number) NOT NULL,
+    sender_account_id INT REFERENCES Account(account_number) NOT NULL,
+    amount REAL NOT NULL,
     tran_time TIMESTAMP NOT NULL,
-    tran_description VARCHAR(255) NOT NULL
+    tran_description VARCHAR(255) NULL
 );

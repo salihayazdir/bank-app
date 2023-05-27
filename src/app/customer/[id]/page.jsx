@@ -11,13 +11,18 @@ async function getAccounts(customerId) {
         ac.*,
         br.branch_name,
         ty.acc_type_name,
-        ty.try_multiplier
+        ty.try_multiplier,
+        pr.customer_name parent_name
     from
-        Account ac
-        left join Account_Type ty
+        account ac
+        left join account_type ty
             on ac.account_type_id = ty.id
-        left join Branch br
+        left join branch br
             on ac.branch_id = br.id
+        left join customer cs
+            on ac.customer_id = cs.id
+        left join customer pr
+            on cs.parent_id = pr.id
     where
         ac.customer_id = ${customerId}
 `)
@@ -44,12 +49,15 @@ export default async function CustomerPage({params}) {
                         return (
                             <div className='flex flex-col gap-2 p-6 border border-gray-100 rounded-lg shadow-lg' >
                                 <span>{`Hesap No: ${account.account_number}`}</span>
+                                {account.parent_name !== null && (
+                                    <span>{`Ebeveyn: ${account.parent_name}`}</span>
+                                )}
                                 <span>{`Hesap Türü: ${account.acc_type_name}`}</span>
                                 <span>{`Bakiye: ${account.balance} ${account.acc_type_name}`}</span>
                                 {!isTryAccount && (<span>{`TL Karşılığı: ${account.balance * account.try_multiplier} TL`}</span>)}
                                 <span>{`Şube: ${account.branch_name}`}</span>
                                 <span>{`Hesap Açılış Tarihi: ${openingDate.getDate()}.${openingDate.getMonth()}.${openingDate.getFullYear()}`}</span>
-                                <span>{`Şu tarihe kadar geçerli: ${expirationDate.getDate()}.${expirationDate.getMonth()}.${expirationDate.getFullYear()}`}</span>
+                                <span>{`Şu tarihe kadar geçerli: ${expirationDate.toLocaleDateString("tr-TR")}`}</span>
                                 <Link href={`/account/${account.account_number}`}>
                                     <button className='px-4 py-2 font-bold text-indigo-700 rounded-md bg-indigo-50' >Hesaba Git</button>
                                 </Link>

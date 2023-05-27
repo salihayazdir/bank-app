@@ -1,6 +1,6 @@
 const { Client } = require('pg')
 import connection from '@/sql/connection'
-import Link from 'next/link'
+import { revalidatePath } from 'next/cache'
 
 async function getAccount(accountNumber) {
   const db = new Client(connection)
@@ -35,6 +35,28 @@ export default async function CustomerPage({params}) {
     const openingDate = new Date(account.opening_date)
     const expirationDate = new Date(account.expiration_date)
     const isTryAccount = account.acc_type_name === 'TRY'
+
+    const transferMoney = async (formData) => {
+        "use server";
+        const db = new Client(connection)
+        await db.connect()
+        
+        const query = `
+        select transferMoney (
+            ${formData.get("receiver")},
+            ${accountNumber},
+            ${formData.get("amount")},
+            '${formData.get("description")}'
+        )`
+        
+        const res = await db.query(query)
+        
+        await db.end()
+        console.log(res.rows[0])
+        console.log(accountNumber)
+        revalidatePath(`/account/${accountNumber}`)
+        return res.rows[0]
+    }
     
     return (
         <div className='flex flex-col w-full gap-12' >
@@ -51,14 +73,20 @@ export default async function CustomerPage({params}) {
             </div>
             <div className='flex flex-col gap-4' >
                 <h1 className='pb-2 text-xl font-semibold text-teal-600 border-b border-teal-600'>{`Para Gönder`}</h1>
-                <form className='flex flex-col gap-4' >
+                <form
+                action={transferMoney}
+                className='flex flex-col gap-4' >
                     <div>
-                        <label htmlFor="receiver_id" className="block text-sm font-medium">Alıcı Hesap No.</label>
-                        <input type="text" id="receiver_id" className="bg-gray-50 border border-gray-200 rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5" placeholder="" required/>
+                        <label htmlFor="receiver" className="block text-sm font-medium">Alıcı Hesap No.</label>
+                        <input type="text" name="receiver" id="receiver" className="bg-gray-50 border border-gray-200 rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5" placeholder="" required/>
                     </div>
                     <div>
                         <label htmlFor="amount" className="block text-sm font-medium">Miktar</label>
-                        <input type="number" id="amount" className="bg-gray-50 border border-gray-200 rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5" placeholder="" required/>
+                        <input type="number" name="amount" id="amount" className="bg-gray-50 border border-gray-200 rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5" placeholder="" required/>
+                    </div>
+                    <div>
+                        <label htmlFor="description" className="block text-sm font-medium">Açıklama</label>
+                        <input type="text" name="description" id="description" className="bg-gray-50 border border-gray-200 rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5" placeholder="" required/>
                     </div>
                     <button type='submit' className='p-2.5 mt-2 text-white bg-teal-700 tracking-wider font-semibold hover:shadow-2xl shadow-teal-600 hover:bg-teal-800 rounded-md '>
                         Gönder
