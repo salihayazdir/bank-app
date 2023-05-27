@@ -42,8 +42,9 @@ CREATE TABLE Branch(
 CREATE TABLE Account(
     customer_id INT REFERENCES Customer(id) NOT NULL,
     account_type_id INT REFERENCES Account_Type(id) NOT NULL,
+    branch_id INT REFERENCES Branch(id) NOT NULL,
+    account_number INT NOT NULL UNIQUE,
     balance REAL NOT NULL,
-    branch_id INT NOT NULL,
     opening_date DATE NOT NULL,
     expiration_date DATE NULL,
         PRIMARY KEY (customer_id, account_type_id)
