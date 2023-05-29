@@ -58,3 +58,21 @@ begin
 end;
 $$
 language plpgsql;
+
+create or replace function
+    child_account_trigger()
+    returns trigger as
+$$
+begin
+	if (date_part('year',age(new.bdate)) < 18 and new.parent_id is null)
+        then
+		raise exception '18 yaş altı müşterilerilerin ebeveyni olması gerekli.';
+		return old;
+	else
+		return new;
+	end if;
+end;
+$$
+language plpgsql;
+
+create trigger child_account after update on customer for each row execute procedure child_account_trigger();
